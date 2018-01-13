@@ -1,0 +1,81 @@
+ErrorDocument 401 /401.html
+ErrorDocument 400 /400.html
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http://(www\.)?yourdomain.com/.*$ [NC]
+RewriteRule \.(gif|jpg|css)$ - [F]
+# disable directory browsing
+Options All -Indexes
+SetEnv SG Asia/Singapore
+RewriteEngine On 
+RewriteBase / 
+RewriteCond %{THE_REQUEST} !^[A-Z]{3,9}\ [a-zA-Z0-9\.\+_/\-\?\=\&]+\ HTTP/ [NC] 
+RewriteRule .* - [F,NS,L] 
+
+# secure .htaccess file
+<Files .htaccess>
+	Order allow,deny
+	Deny from all
+</Files>
+
+## EXPIRES CACHING ##
+ <IfModule mod_expires.c>
+ ExpiresActive On
+ ExpiresByType image/jpg "access 1 year"
+ ExpiresByType image/jpeg "access 1 year"
+ ExpiresByType image/gif "access 1 year"
+ ExpiresByType image/png "access 1 year"
+ ExpiresByType text/css "access 1 month"
+ ExpiresByType text/html "access 1 month"
+ ExpiresByType text/php "access 1 month"
+ ExpiresByType application/pdf "access 1 month"
+ ExpiresByType text/x-javascript "access 1 month"
+ ExpiresByType application/x-shockwave-flash "access 1 month"
+ ExpiresByType image/x-icon "access 1 year"
+ ExpiresDefault "access 1 month"
+ </IfModule>
+ ## EXPIRES CACHING ##
+ 
+<FilesMatch "\.(?i:gif|jpe?g|png|ico|css|js|swf|html)$">
+
+  <IfModule mod_headers.c>
+    Header set Cache-Control "max-age=172800, public, must-revalidate"
+  </IfModule>
+
+</FilesMatch>
+
+<IfModule mod_headers.c>
+<FilesMatch ".(js|css|xml|gz|html)$">
+Header append Vary: Accept-Encoding
+</FilesMatch>
+</IfModule>
+
+<FilesMatch ".(xml|gz)$">
+FileETag None
+Header unset ETag
+Header set Cache-Control "max-age=1000, no-cache, must-revalidate"
+Header set Pragma "no-cache"
+</FilesMatch>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE image/x-icon
+AddOutputFilterByType DEFLATE iamge/svg+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE font/ttf
+AddOutputFilterByType DEFLATE font/otf
+
+#For Older Browsers Which Can't Handel Compression
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IFModule>
